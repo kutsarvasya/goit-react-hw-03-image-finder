@@ -14,7 +14,7 @@ export class ImageGallery extends Component {
     totalHits: null,
     images: [],
     modalData: '',
-    showLoader: true,
+    showLoader: false,
   };
 
   static getDerivedStateFromProps(props, state) {
@@ -30,12 +30,10 @@ export class ImageGallery extends Component {
       this.state.page !== prevState.page
     ) {
       try {
-        this.setState({ showLoader: false });
+        this.setState({ showLoader: true });
         this.getImages();
       } catch {
         toast.error('ERROR');
-      } finally {
-        this.setState({ showLoader: true });
       }
     }
   }
@@ -49,6 +47,7 @@ export class ImageGallery extends Component {
       this.setState(prev => ({
         images: prev.images ? [...prev.images, ...data.hits] : data.hits,
         totalHits: data.totalHits,
+        showLoader: false,
       }));
     } catch (error) {
       toast.error('ERROR');
@@ -62,7 +61,7 @@ export class ImageGallery extends Component {
     return (
       <>
         {this.props.search &&
-          (!showLoader ? (
+          (showLoader ? (
             <Loader />
           ) : (
             <List>
