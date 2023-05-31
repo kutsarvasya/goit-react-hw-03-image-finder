@@ -24,16 +24,20 @@ export class ImageGallery extends Component {
     return null;
   }
 
-  componentDidUpdate(prevProps, prevState) {
+  async componentDidUpdate(prevProps, prevState) {
     if (
       prevProps.search !== this.props.search ||
       this.state.page !== prevState.page
     ) {
       try {
-        this.setState({ showLoader: true });
-        this.getImages();
+        if (prevProps.search !== this.props.search) {
+          this.setState({ showLoader: true });
+        }
+        await this.getImages();
       } catch {
         toast.error('ERROR');
+      } finally {
+        this.setState({ showLoader: false });
       }
     }
   }
@@ -47,7 +51,7 @@ export class ImageGallery extends Component {
       this.setState(prev => ({
         images: prev.images ? [...prev.images, ...data.hits] : data.hits,
         totalHits: data.totalHits,
-        showLoader: false,
+        // showLoader: false,
       }));
     } catch (error) {
       toast.error('ERROR');
