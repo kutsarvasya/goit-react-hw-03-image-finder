@@ -19,7 +19,12 @@ export class ImageGallery extends Component {
 
   static getDerivedStateFromProps(props, state) {
     if (props.search !== state.searchCopy) {
-      return { page: 1, images: [], searchCopy: props.search };
+      return {
+        page: 1,
+        images: [],
+        searchCopy: props.search,
+        showLoader: true,
+      };
     }
     return null;
   }
@@ -30,14 +35,13 @@ export class ImageGallery extends Component {
       this.state.page !== prevState.page
     ) {
       try {
-        if (prevProps.search !== this.props.search) {
-          this.setState({ showLoader: true });
-        }
         await this.getImages();
       } catch {
         toast.error('ERROR');
       } finally {
-        this.setState({ showLoader: false });
+        if (this.state.showLoader) {
+          this.setState({ showLoader: false });
+        }
       }
     }
   }
